@@ -1,3 +1,4 @@
+<!-- File: examples/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,22 +23,21 @@
     <div id="suggestions"></div>
   </form>
 
-  <!-- Load TypoAPI directly from unpkg CDN -->
+  <!-- Load TypoAPI and specify worker URL dynamically -->
   <script type="module">
-    const TYPO_VERSION = '0.0.1';
-    const TYPO_API = `https://unpkg.com/typo-ime@${TYPO_VERSION}/TypoAPI.js`;
-    const TYPO_WORKER = `https://unpkg.com/typo-ime@${TYPO_VERSION}/TypoSM.js`;
-
-    import { TypoAPI } from TYPO_API;
-
     (async () => {
       try {
-        // 1. Initialize IME, en spécifiant l'URL du worker
-        const ime = await TypoAPI.create({ 
-          worker: TYPO_WORKER 
-        });
+        const TYPO_VERSION = '0.0.1';
+        const API_PATH = `https://unpkg.com/typo-ime@${TYPO_VERSION}/TypoAPI.js`;
+        const WORKER_PATH = `https://unpkg.com/typo-ime@${TYPO_VERSION}/TypoSM.js`;
 
-        // 2. Attach to input and suggestion container
+        // Dynamically import the API module (can be local or CDN)
+        const { TypoAPI } = await import(API_PATH);
+
+        // Initialize IME, passing worker script path
+        const ime = await TypoAPI.create({ worker: WORKER_PATH });
+
+        // Attach to input and suggestion container
         ime.attach({
           inputEl: document.getElementById('pinyinInput'),
           suggestionsEl: document.getElementById('suggestions'),
@@ -48,13 +48,12 @@
         });
 
         console.log('Typo-IME is ready!');
-
       } catch (error) {
         console.error('Failed to initialize Typo-IME:', error);
         document.getElementById('suggestions').innerHTML = 
           '<p style="color: red;">Error: Could not load the IME worker.</p>';
       }
-    })().catch(console.error);
+    })();
   </script>
 </body>
 </html>
