@@ -1,0 +1,33 @@
+{
+  "name": "typo-ime",
+  "version": "0.0.1",
+  "description": "In-browser Pinyin-to-Hanzi IME with fuzzy search and bigram probabilistic suggestions",
+  "main": "TypoAPI.js",
+  "module": "TypoAPI.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "echo \"No build step required\"",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "IME",
+    "Pinyin",
+    "Hanzi",
+    "fuzzy-search",
+    "bigram",
+    "web-worker"
+  ],
+  "author": "brandon57l",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brandon57l/typo-ime.git"
+  },
+  "files": [
+    "TypoAPI.js",
+    "TypoSM.js"
+  ],
+  "engines": {
+    "node": ">=14"
+  }
+}
