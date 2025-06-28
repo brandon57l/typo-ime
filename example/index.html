@@ -15,7 +15,7 @@
   </style>
 </head>
 <body>
-  <h1>Typo-IME CDN Example</h1>
+  <h1>Typo-IME Example</h1>
   <p>Type Pinyin and select a suggestion:</p>
   
   <form id="imeForm">
@@ -23,37 +23,23 @@
     <div id="suggestions"></div>
   </form>
 
-  <!-- Load TypoAPI and specify worker URL dynamically -->
-  <script type="module">
+  <!-- Load TypoAPI and specify worker -->
+    <script type="module">
+    import { TypoAPI } from '../TypoAPI.js';
+
     (async () => {
-      try {
-        const TYPO_VERSION = '0.0.1';
-        const API_PATH = `https://unpkg.com/typo-ime@${TYPO_VERSION}/TypoAPI.js`;
-        const WORKER_PATH = `https://unpkg.com/typo-ime@${TYPO_VERSION}/TypoSM.js`;
+        
+        // Tell TypoAPI exactly where the worker script lives:
+        const ime = await TypoAPI.create({ workerPath: "../TypoSM.js" });
 
-        // Dynamically import the API module (can be local or CDN)
-        const { TypoAPI } = await import(API_PATH);
-
-        // Initialize IME, passing worker script path
-        const ime = await TypoAPI.create({ worker: WORKER_PATH });
-
-        // Attach to input and suggestion container
         ime.attach({
-          inputEl: document.getElementById('pinyinInput'),
-          suggestionsEl: document.getElementById('suggestions'),
-          onCommit: (text) => {
-            alert(`Committed: ${text}`);
-            console.log(`Committed: ${text}`);
-          }
+        inputEl: document.getElementById('pinyinInput'),
+        suggestionsEl: document.getElementById('suggestions'),
+        onCommit: text => alert(`Committed: ${text}`)
         });
 
-        console.log('Typo-IME is ready!');
-      } catch (error) {
-        console.error('Failed to initialize Typo-IME:', error);
-        document.getElementById('suggestions').innerHTML = 
-          '<p style="color: red;">Error: Could not load the IME worker.</p>';
-      }
-    })();
-  </script>
+    })().catch(console.error);
+    </script>
+
 </body>
 </html>
