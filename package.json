@@ -1,6 +1,6 @@
 {
   "name": "typo-ime",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "In-browser Pinyin-to-Hanzi IME with fuzzy search and bigram probabilistic suggestions",
   "main": "TypoAPI.js",
   "module": "TypoAPI.js",
