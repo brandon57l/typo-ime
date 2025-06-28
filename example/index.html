@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Typo-IME CDN Example</title>
+  <!-- Basic styles -->
+  <style>
+    body { font-family: sans-serif; padding: 2rem; max-width: 600px; margin: auto; }
+    #pinyinInput { width: 100%; padding: 0.5rem; font-size: 1.2rem; }
+    #suggestions { margin-top: 0.5rem; }
+    #suggestions button { margin: 0.2rem; padding: 0.4rem 0.8rem; border: 1px solid #ccc; background-color: #f9f9f9; cursor: pointer; }
+    #suggestions button:hover { background-color: #e9e9e9; }
+  </style>
+</head>
+<body>
+  <h1>Typo-IME CDN Example</h1>
+  <p>Type Pinyin and select a suggestion:</p>
+  
+  <form id="imeForm">
+    <input id="pinyinInput" placeholder="Type pinyin (e.g., 'nihao')..." autocomplete="off" />
+    <div id="suggestions"></div>
+  </form>
+
+  <!-- Load TypoAPI directly from unpkg CDN -->
+  <script type="module">
+    const TYPO_VERSION = '0.0.1';
+    const TYPO_API = `https://unpkg.com/typo-ime@${TYPO_VERSION}/TypoAPI.js`;
+    const TYPO_WORKER = `https://unpkg.com/typo-ime@${TYPO_VERSION}/TypoSM.js`;
+
+    import { TypoAPI } from TYPO_API;
+
+    (async () => {
+      try {
+        // 1. Initialize IME, en spécifiant l'URL du worker
+        const ime = await TypoAPI.create({ 
+          worker: TYPO_WORKER 
+        });
+
+        // 2. Attach to input and suggestion container
+        ime.attach({
+          inputEl: document.getElementById('pinyinInput'),
+          suggestionsEl: document.getElementById('suggestions'),
+          onCommit: (text) => {
+            alert(`Committed: ${text}`);
+            console.log(`Committed: ${text}`);
+          }
+        });
+
+        console.log('Typo-IME is ready!');
+
+      } catch (error) {
+        console.error('Failed to initialize Typo-IME:', error);
+        document.getElementById('suggestions').innerHTML = 
+          '<p style="color: red;">Error: Could not load the IME worker.</p>';
+      }
+    })().catch(console.error);
+  </script>
+</body>
+</html>

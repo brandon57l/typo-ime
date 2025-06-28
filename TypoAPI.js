@@ -1,36 +1,23 @@
+// File: TypoAPI.js (version améliorée)
+
 /**
  * @module TypoAPI
  * @description
  * A lightweight in-browser IME (Input Method Editor) for Pinyin-to-Hanzi conversion.
  * Provides fuzzy search suggestions with probabilistic bigram context support via Web Worker.
- *
- * @example
- * import { TypoAPI } from 'typo-api';
- * 
- * // Create and initialize the IME instance:
- * TypoAPI.create().then(api => {
- *   api.attach({
- *     inputEl: document.querySelector('#pinyinInput'),
- *     suggestionsEl: document.querySelector('#suggestions'),
- *     onCommit: (text) => console.log('Committed text:', text),
- *     suggestionLimit: 10,
- *     suggestionBtnClass: 'my-suggestion-button'
- *   });
- * });
  */
-
 export class TypoAPI {
   /**
-   * Create a new TypoAPI instance.
-   * Initializes an internal Web Worker for search logic.
+   * @private
+   * @param {Worker} worker - The Web Worker instance.
    */
-  constructor() {
+  constructor(worker) {
     /** @private @type {Map<number, Function>} */
     this.pendingSearches = new Map();
     /** @private @type {number} */
     this.searchIdCounter = 0;
     /** @private @type {Worker} */
-    this.worker = new Worker('./TypoWorker.js', { type: 'module' });
+    this.worker = worker; 
 
     // --- IME internal state ---
     /** @private @type {HTMLInputElement|null} */ this.inputEl = null;
@@ -47,11 +34,16 @@ export class TypoAPI {
 
   /**
    * Static factory to create and initialize the IME.
+   * @param {object} [options] - Options for creation.
+   * @param {string} [options.workerPath='./TypoSM.js'] - URL for the worker script.
    * @returns {Promise<TypoAPI>} Resolves when the worker is ready.
    */
-  static create() {
+  static create({ workerPath = './TypoSM.js' } = {}) { 
     return new Promise((resolve, reject) => {
-      const instance = new TypoAPI();
+      // Crée le worker avec l'URL fournie
+      const worker = new Worker(workerPath, { type: 'module' });
+      const instance = new TypoAPI(worker);
+
       const initHandler = (event) => {
         const { type, error } = event.data;
         if (type === 'init_success') {
@@ -68,6 +60,9 @@ export class TypoAPI {
       instance.worker.postMessage({ type: 'init' });
     });
   }
+
+  // ... (le reste de la classe est inchangé) ...
+  // ... (le reste de la classe est inchangé) ...
 
   /**
    * Attach IME behavior to DOM elements.
